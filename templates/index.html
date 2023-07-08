@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html id = "center">
+<!--From https://codepen.io/frytyler/pen/EGdtg-->
+<head>
+  <meta charset="UTF-8">
+  <title>ML API</title>
+  <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+  <style>
+    * {
+    box-sizing: border-box;
+  }
+
+  .href_col{
+    color: #ccc;
+  }
+  
+  input[type=text], select, textarea {
+    width: 80%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+  }
+  
+  label {
+    padding: 12px 12px 12px 0;
+    display: inline-block;
+  }
+  
+  input[type=submit] {
+    background-color: #04AA6D;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right;
+  }
+  
+  input[type=submit]:hover {
+    background-color: #45a049;
+  }
+  
+  .container {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+  }
+  
+  .col-25 {
+    text-align:center;
+    float: left;
+    width: 25%;
+    margin-top: 6px;
+  }
+  
+  .col-75 {
+    float: left;
+    width: 75%;
+    margin-top: 6px;
+  }
+  
+  /* Clear floats after the columns */
+  .row::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  
+  /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+  @media screen and (max-width: 600px) {
+    .col-25, .col-75, input[type=submit] {
+      width: 100%;
+      margin-top: 0;
+    }
+  }
+
+
+
+
+html{
+  background: linear-gradient(0.25turn, #320c11, #0c2109a7, #250748);
+
+}
+#center{
+    text-align: center;
+    color: aliceblue;
+}
+  </style>
+  
+</head>
+
+<body>
+ <div class="login">
+	<h1 id = "center">Heart Disease Predictior</h1>
+  <hr>
+  <p>
+    Here we have used XGBost Machine Learning Algorithm to predict hear attack. This is a part of a project for the internship in FeyNN Lab.
+   </p>
+   <hr>
+
+     <!-- Main Input For Receiving Query to our ML -->
+    <form action="{{ url_for('predict')}}"method="post">
+
+    <div class="row">
+      <div class="col-25">
+        <label for="age">Age</label>
+      </div>
+      <div class="col-75">
+        <input type="text" name="age" placeholder="Age" required="required" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-25">
+        <label for="sex">Sex</label>
+      </div>
+      <div class="col-75">
+        <select name="sex" id="sex">
+          <option value="0">Male</option>
+          <option value="1">Female</option>      
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-25">
+        <label for="cp">Constrictive Pericarditi(CP)</label>
+      </div>
+      <div class="col-75">
+        <select name="cp" id="cp">
+          <option value="0">Typical Angina</option>
+          <option value="1">Atypical Angina</option>
+          <option value="2">Non-Anginal Pain</option>
+          <option value="3">Asymptomatic</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-25">
+        <label for="trtbps">Resting Blood Pressure (mm Hg)</label>
+      </div>
+      <div class="col-75">
+        <input type="text" name="trtbps" placeholder="Resting Blood Pressure" required="required" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-25">
+        <label for="chol">Cholesterol (mg/dl)</label>
+      </div>
+      <div class="col-75">
+        <input type="text" name="chol" placeholder="Cholesterol" required="required" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-25">
+        <label for="fbs">Fasting Blood Sugar</label>
+      </div>
+      <div class="col-75">
+        <select name="fbd" id="fbs">
+          <option value="1">Yes, If Cholesterol >= 120 </option>
+          <option value="0">No, If Cholesterol < 120</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-25">
+        <label for="restecg">Rest ECG</label>
+      </div>
+      <div class="col-75">
+        <select name="restecg" id="restecg">
+          <option value="0">Normal</option>
+          <option value="1">ST-T Wave Abnormality</option>
+          <option value="1">Probable or Definite Left Ventricular Hypertrophy</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-25">
+        <label for="thalach">Max Heart Rate (thalach)</label>
+      </div>
+      <div class="col-75">
+        <input type="text" name="thalach" placeholder="Max Heart Rate (thalach)" required="required" />
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-25">
+        <label for="exng">Exercise induced Angina</label>
+      </div>
+      <div class="col-75">
+        <select name="exng" id="exng">          
+          <option value="1">Yes</option>
+          <option value="0">No</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-25">
+        <label for="oldpeak">Old Peak</label>
+      </div>
+      <div class="col-75">
+        <input type="text" name="oldpeak" placeholder="Old Peak" required="required" />
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-25">
+        <label for="slp">SLP</label>
+      </div>
+      <div class="col-75">
+        <select name="slp" id="slp">          
+          <option value="0">SLP 0</option>
+          <option value="1">SLP 1</option>
+          <option value="2">SLP 2</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-25">
+        <label for="caa">Coronary Artery Anomalies(CAA) Type</label>
+      </div>
+      <div class="col-75">
+        <select name="caa" id="caa">          
+          <option value="0">CAA Type - 0</option>
+          <option value="1">CAA Type - 1</option>
+          <option value="2">CAA Type - 2</option>
+          <option value="3">CAA Type - 3</option>
+          <option value="4">CAA Type - 4</option>
+        </select>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-25">
+        <label for="thall">Thalassemia (Thall)</label>
+      </div>
+      <div class="col-75">
+        <select name="thall" id="thall">          
+          <option value="1">Yes</option>
+          <option value="0">No</option>
+        </select>
+      </div>
+    </div>      
+    
+    <p>
+
+      <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
+    </form>
+
+   <br>
+   <br>
+   {{ prediction_text }}
+
+   
+   
+   <hr>
+   <p>
+    This website is developed by
+    <br>
+    <a href="https://sites.google.com/view/krishnendujana" class="href_col">Krishnendu Jana</a>
+    <br>
+    MTech (Computer Science and Data Processing), IIT Kharagpur.
+   </p>
+
+
+ </div>
+
+
+</body>
+</html>
